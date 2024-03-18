@@ -1,1 +1,81 @@
-test
+variables:
+  DOCKER_REGISTRY: $AWS_ACCOUNT_ID.dkr.ecr.eu-west-1.amazonaws.com    
+  AWS_DEFAULT_REGION: eu-west-1 
+  APP_NAME: robot-shop
+  DOCKER_HOST: tcp://docker:2375 
+publish:
+  image:   
+    name: amazon/aws-cli   
+    entrypoint: [""]  
+  services:   
+    - docker:dind 
+  before_script:   
+    - amazon-linux-extras install docker   
+    - aws --version    
+    - docker --version  
+  script: 
+    - cd cart               
+    - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $DOCKER_REGISTRY  
+    - docker build -t $APP_NAME .
+    - docker tag $APP_NAME:latest $DOCKER_REGISTRY/$APP_NAME:cart
+    - docker push $DOCKER_REGISTRY/$APP_NAME:cart
+    - cd .. 
+    - cd web               
+    - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $DOCKER_REGISTRY  
+    - docker build -t $APP_NAME .
+    - docker tag $APP_NAME:latest $DOCKER_REGISTRY/$APP_NAME:web
+    - docker push $DOCKER_REGISTRY/$APP_NAME:web
+    - cd .. 
+    - cd user             
+    - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $DOCKER_REGISTRY  
+    - docker build -t $APP_NAME .
+    - docker tag $APP_NAME:latest $DOCKER_REGISTRY/$APP_NAME:user
+    - docker push $DOCKER_REGISTRY/$APP_NAME:user
+    - cd .. 
+    - cd ratings          
+    - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $DOCKER_REGISTRY  
+    - docker build -t $APP_NAME .
+    - docker tag $APP_NAME:latest $DOCKER_REGISTRY/$APP_NAME:ratings
+    - docker push $DOCKER_REGISTRY/$APP_NAME:ratings
+    - cd .. 
+    - cd payment          
+    - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $DOCKER_REGISTRY  
+    - docker build -t $APP_NAME .
+    - docker tag $APP_NAME:latest $DOCKER_REGISTRY/$APP_NAME:payment
+    - docker push $DOCKER_REGISTRY/$APP_NAME:payment
+    - cd .. 
+    - cd mysql        
+    - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $DOCKER_REGISTRY  
+    - docker build -t $APP_NAME .
+    - docker tag $APP_NAME:latest $DOCKER_REGISTRY/$APP_NAME:mysql-db
+    - docker push $DOCKER_REGISTRY/$APP_NAME:mysql-db
+    - cd .. 
+    - cd dispatch        
+    - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $DOCKER_REGISTRY  
+    - docker build -t $APP_NAME .
+    - docker tag $APP_NAME:latest $DOCKER_REGISTRY/$APP_NAME:dispatch
+    - docker push $DOCKER_REGISTRY/$APP_NAME:dispatch
+    - cd .. 
+    - cd catalogue        
+    - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $DOCKER_REGISTRY  
+    - docker build -t $APP_NAME .
+    - docker tag $APP_NAME:latest $DOCKER_REGISTRY/$APP_NAME:catalogue
+    - docker push $DOCKER_REGISTRY/$APP_NAME:catalogue
+    - cd .. 
+    - cd shipping        
+    - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $DOCKER_REGISTRY  
+    - docker build -t $APP_NAME .
+    - docker tag $APP_NAME:latest $DOCKER_REGISTRY/$APP_NAME:shipping
+    - docker push $DOCKER_REGISTRY/$APP_NAME:shipping
+    - cd .. 
+    - cd mongo
+    - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $DOCKER_REGISTRY  
+    - docker build -t $APP_NAME .
+    - docker tag $APP_NAME:latest $DOCKER_REGISTRY/$APP_NAME:mongo-db
+    - docker push $DOCKER_REGISTRY/$APP_NAME:mongo-db
+    - cd .. 
+    - cd load
+    - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $DOCKER_REGISTRY  
+    - docker build -t $APP_NAME .
+    - docker tag $APP_NAME:latest $DOCKER_REGISTRY/$APP_NAME:load
+    - docker push $DOCKER_REGISTRY/$APP_NAME:load
