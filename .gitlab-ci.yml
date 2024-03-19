@@ -1,8 +1,18 @@
-variables:
+ variables:
   DOCKER_REGISTRY: $AWS_ACCOUNT_ID.dkr.ecr.eu-west-1.amazonaws.com    
   AWS_DEFAULT_REGION: eu-west-1 
   APP_NAME: robot-shop
   DOCKER_HOST: tcp://docker:2375 
+
+stage: connect to AWS EKS
+image: 
+  name: bitnami/kubectl:latest
+  entrypoint: ['']  
+before_script:   
+    - kubectl config use-context "$KUBE_CONTEXT"  
+script: 
+    - kubectl get ns
+  
 publish:
   image:   
     name: amazon/aws-cli   
