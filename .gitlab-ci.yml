@@ -3,6 +3,7 @@
   AWS_DEFAULT_REGION: eu-west-1 
   APP_NAME: robot-shop
   DOCKER_HOST: tcp://docker:2375 
+  KUBE_CONTEXT: feyzademirel/robot-shop-app:robot-shop
 
 stage: connect to AWS EKS
 image: 
