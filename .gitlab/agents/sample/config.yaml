@@ -1,6 +1,6 @@
 gitops:
   manifest_projects:
-  - id: 42342352
+  - id: 55934672
     ref:
       branch: master
   default_namespace: robot-shop
