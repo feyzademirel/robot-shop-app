@@ -1,0 +1,15 @@
+gitops:
+  manifest_projects:
+  - id: 42342352
+    ref:
+      branch: master
+  default_namespace: robot-shop
+  paths:
+
+  reconcile_timeout: 3600s
+  dry_run_strategy: none
+  prune: true
+  prune_timeout: 3600s
+  prune_propagation_policy: foreground
+  inventory_policy: must_match
+  
