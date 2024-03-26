@@ -1,0 +1,49 @@
+ 
+name: Deploy to Amazon ECR
+ 
+on:
+  push:
+    branches: [ "master" ]
+
+env:
+  ECR_REPOSITORY: robot-app     # set this to your Amazon ECR repository name                                   
+  #IMAGE_TAG: test                 
+ 
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: develop
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure AWS credentials from AWS account
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ secrets.AWS_REGION }}
+        role-session-name: GitHub-OIDC-Role-cla
+
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+      
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      run: |
+        name: Build and push
+        run: |
+         docker build  -f ./web/Dockerfile -t rs-web .
+         aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 963466709001.dkr.ecr.eu-west-1.amazonaws.com
+         docker tag rs-web:latest 963466709001.dkr.ecr.eu-west-1.amazonaws.com/robot-app:rs-web
+         docker push 963466709001.dkr.ecr.eu-west-1.amazonaws.com/robot-app:rs-web
+        
